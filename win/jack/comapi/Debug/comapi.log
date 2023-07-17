@@ -1,0 +1,26 @@
+﻿  Build Version
+  
+  Version Utility 1.8 [AEL]
+  Build String:  1.0.3 build 41, 11:40 17.JUL.23 [Aaron]
+  
+  stdafx.cpp
+  dllmain.cpp
+  com.cpp
+  enumser.cpp
+  trace.cpp
+  Generating Code...
+     Creating library Debug\comapi.lib and object Debug\comapi.exp
+  comapi.vcxproj -> D:\de0_com_fpga\win\jack\comapi\Debug\comapi.dll
+  Copy DLLs and LIBs
+  D:\de0_com_fpga\win\jack\comapi\Debug\comapi.dll -> D:\de0_com_fpga\win\jack\dll\x64\Debug\comapi.dll
+  1 File(s) copied
+  D:\de0_com_fpga\win\jack\comapi\Debug\comapi.lib -> D:\de0_com_fpga\win\jack\lib\x64\Debug\comapi.lib
+  1 File(s) copied
+  D:\de0_com_fpga\win\jack\comapi\Debug\comapi.exp -> D:\de0_com_fpga\win\jack\lib\x64\Debug\comapi.exp
+  1 File(s) copied
+  D:\de0_com_fpga\win\jack\comapi\Debug\comapi.pdb -> D:\de0_com_fpga\win\jack\lib\x64\Debug\comapi.pdb
+  1 File(s) copied
+  D:\de0_com_fpga\win\jack\comapi\comapi.h -> D:\de0_com_fpga\win\jack\inc\comapi.h
+  1 File(s) copied
+  D:\de0_com_fpga\win\jack\comapi\x64\wsc64.dll -> D:\de0_com_fpga\win\jack\dll\x64\Debug\wsc64.dll
+  1 File(s) copied

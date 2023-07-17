@@ -1,0 +1,79 @@
+﻿  Build Version
+  
+  Firmware Version Utility 1.10
+  cmd : D:\de0_com_fpga\win\jack\..\..\utils\fw_ver.exe D:\de0_com_fpga\win\jack\app\build.inc D:\de0_com_fpga\win\jack\app\build.h ..\..\.git 
+  cwd : D:\de0_com_fpga\win\jack\app
+EXEC : warning : The ..\..\.git Directory was not found
+  BUILD_HI : 1.4.1 build 79, 11:40 17.JUL.23 [Aaron] 
+  
+  stdafx.cpp
+  CMQue.cpp
+  CMSock.cpp
+  DNLSock.cpp
+  MsgQue.cpp
+  MsgSock.cpp
+  2DImage.cpp
+  About.cpp
+  boxmuller.cpp
+  BufferDC.cpp
+  chkBox.cpp
+  CliView.cpp
+  ColorBox.cpp
+  ConView.cpp
+  CpMemView.cpp
+  CpView.cpp
+  DAQView.cpp
+  EditEx.cpp
+  GraphSet.cpp
+  GraphWnd.cpp
+  HyperLink.cpp
+  Generating Code...
+  Compiling...
+  ImageSet.cpp
+  ImageWnd.cpp
+  MFCEditEx.cpp
+  ParmsWnd.cpp
+  Path.cpp
+  ProjectSet.cpp
+  ProjectWnd.cpp
+  app.cpp
+  appDoc.cpp
+  MainFrm.cpp
+  OutputWnd.cpp
+  LogEdit.cpp
+  RichEx.cpp
+  SrvView.cpp
+  trace.cpp
+  TreeViewEx.cpp
+  ViewEx.cpp
+  WndResizer.cpp
+  Generating Code...
+  app.vcxproj -> D:\de0_com_fpga\win\jack\Debug\de0.exe
+  Build Version
+  D:\de0_com_fpga\win\jack\dll\x64\Debug\cmapi.dll -> D:\de0_com_fpga\win\jack\Debug\cmapi.dll
+  D:\de0_com_fpga\win\jack\dll\x64\Debug\comapi.dll -> D:\de0_com_fpga\win\jack\Debug\comapi.dll
+  D:\de0_com_fpga\win\jack\dll\x64\Debug\fifoapi.dll -> D:\de0_com_fpga\win\jack\Debug\fifoapi.dll
+  D:\de0_com_fpga\win\jack\dll\x64\Debug\ftd2xx.dll -> D:\de0_com_fpga\win\jack\Debug\ftd2xx.dll
+  D:\de0_com_fpga\win\jack\dll\x64\Debug\ftd2xx64.dll -> D:\de0_com_fpga\win\jack\Debug\ftd2xx64.dll
+  D:\de0_com_fpga\win\jack\dll\x64\Debug\lanapi.dll -> D:\de0_com_fpga\win\jack\Debug\lanapi.dll
+  D:\de0_com_fpga\win\jack\dll\x64\Debug\libserialport.dll -> D:\de0_com_fpga\win\jack\Debug\libserialport.dll
+  D:\de0_com_fpga\win\jack\dll\x64\Debug\libspapi.dll -> D:\de0_com_fpga\win\jack\Debug\libspapi.dll
+  D:\de0_com_fpga\win\jack\dll\x64\Debug\optoapi.dll -> D:\de0_com_fpga\win\jack\Debug\optoapi.dll
+  D:\de0_com_fpga\win\jack\dll\x64\Debug\PEGRP64F.DLL -> D:\de0_com_fpga\win\jack\Debug\PEGRP64F.DLL
+  D:\de0_com_fpga\win\jack\dll\x64\Debug\uartapi.dll -> D:\de0_com_fpga\win\jack\Debug\uartapi.dll
+  D:\de0_com_fpga\win\jack\dll\x64\Debug\udpapi.dll -> D:\de0_com_fpga\win\jack\Debug\udpapi.dll
+  D:\de0_com_fpga\win\jack\dll\x64\Debug\wpcap.dll -> D:\de0_com_fpga\win\jack\Debug\wpcap.dll
+  D:\de0_com_fpga\win\jack\dll\x64\Debug\wsc64.dll -> D:\de0_com_fpga\win\jack\Debug\wsc64.dll
+  14 File(s) copied
+  0 File(s) copied
+  D:\de0_com_fpga\win\jack\lib\x64\Debug\cmapi.pdb -> D:\de0_com_fpga\win\jack\Debug\cmapi.pdb
+  D:\de0_com_fpga\win\jack\lib\x64\Debug\comapi.pdb -> D:\de0_com_fpga\win\jack\Debug\comapi.pdb
+  D:\de0_com_fpga\win\jack\lib\x64\Debug\fifoapi.pdb -> D:\de0_com_fpga\win\jack\Debug\fifoapi.pdb
+  D:\de0_com_fpga\win\jack\lib\x64\Debug\lanapi.pdb -> D:\de0_com_fpga\win\jack\Debug\lanapi.pdb
+  D:\de0_com_fpga\win\jack\lib\x64\Debug\libserialport.pdb -> D:\de0_com_fpga\win\jack\Debug\libserialport.pdb
+  D:\de0_com_fpga\win\jack\lib\x64\Debug\libspapi.pdb -> D:\de0_com_fpga\win\jack\Debug\libspapi.pdb
+  D:\de0_com_fpga\win\jack\lib\x64\Debug\optoapi.pdb -> D:\de0_com_fpga\win\jack\Debug\optoapi.pdb
+  D:\de0_com_fpga\win\jack\lib\x64\Debug\uartapi.pdb -> D:\de0_com_fpga\win\jack\Debug\uartapi.pdb
+  D:\de0_com_fpga\win\jack\lib\x64\Debug\udpapi.pdb -> D:\de0_com_fpga\win\jack\Debug\udpapi.pdb
+  D:\de0_com_fpga\win\jack\lib\x64\Debug\wsc64.pdb -> D:\de0_com_fpga\win\jack\Debug\wsc64.pdb
+  10 File(s) copied

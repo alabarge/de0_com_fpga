@@ -1,0 +1,25 @@
+﻿  Build Version
+  
+  Version Utility 1.8 [AEL]
+  Build String:  1.0.2 build 38, 11:40 17.JUL.23 [Aaron]
+  
+  stdafx.cpp
+  dllmain.cpp
+  cmapi.cpp
+  trace.cpp
+  Generating Code...
+     Creating library Debug\cmapi.lib and object Debug\cmapi.exp
+  cmapi.vcxproj -> D:\de0_com_fpga\win\jack\cmapi\Debug\cmapi.dll
+  Copy DLLs and LIBs
+  D:\de0_com_fpga\win\jack\cmapi\Debug\cmapi.dll -> D:\de0_com_fpga\win\jack\dll\x64\Debug\cmapi.dll
+  1 File(s) copied
+  D:\de0_com_fpga\win\jack\cmapi\Debug\cmapi.lib -> D:\de0_com_fpga\win\jack\lib\x64\Debug\cmapi.lib
+  1 File(s) copied
+  D:\de0_com_fpga\win\jack\cmapi\Debug\cmapi.exp -> D:\de0_com_fpga\win\jack\lib\x64\Debug\cmapi.exp
+  1 File(s) copied
+  D:\de0_com_fpga\win\jack\cmapi\Debug\cmapi.pdb -> D:\de0_com_fpga\win\jack\lib\x64\Debug\cmapi.pdb
+  1 File(s) copied
+  D:\de0_com_fpga\win\jack\cmapi\cmapi.h -> D:\de0_com_fpga\win\jack\inc\cmapi.h
+  1 File(s) copied
+  D:\de0_com_fpga\win\jack\cmapi\msg_str.h -> D:\de0_com_fpga\win\jack\inc\msg_str.h
+  1 File(s) copied
