@@ -85,7 +85,7 @@ CappDoc::CappDoc()
       {_T("cp.wr"),              _T("1"),                   DOC_UINT,      &m_ini->cpWR,              1,       0x00000000,    _T(""),              _T("")},
       {_T("cp.trace"),           _T("0"),                   DOC_UINT,      &m_ini->cpTrace,           1,       0x00000000,    _T(""),              _T("")},
       {_T("cp.memFile"),         _T("D:\\mem.txt"),         DOC_STR,       &m_ini->cpMemFile,         1,       0x00000000,    _T(""),              _T("")},
-      {_T("cp.memStart"),        _T("0x80400000"),          DOC_HEX8,      &m_ini->cpMemStart,        1,       0x00000000,    _T(""),              _T("")},
+      {_T("cp.memStart"),        _T("0x00800000"),          DOC_HEX8,      &m_ini->cpMemStart,        1,       0x00000000,    _T(""),              _T("")},
       {_T("cp.mem_length"),      _T("0x200"),               DOC_HEX8,      &m_ini->cpMemLength,       1,       0x00000000,    _T(""),              _T("")},
       {_T("cp.mem_type"),        _T("1"),                   DOC_UINT,      &m_ini->cpMemType,         1,       0x00000000,    _T(""),              _T("")},
       {_T("cp.memBin"),          _T("0"),                   DOC_UINT,      &m_ini->cpMemBin,          1,       0x00000000,    _T(""),              _T("")},

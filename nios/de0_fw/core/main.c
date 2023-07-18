@@ -528,6 +528,7 @@ void version(void) {
 
    quartus = localtime(&gc.timestamp);
    xlprint("Quartus Build : %s", asctime(quartus));
+   xlprint("\nDE0-I NIOS, %s\n\n", BUILD_HI);
 
    // Report warning if System ID and Time Stamp
    // do not match fpga_build.h entries.

@@ -20,9 +20,27 @@
 // so 1 would be used here.
 #define  ADC_XFER_SIZE     1
 
+//
 // ADC Sampling Rate, based on throughput
-// of CM interface.
-#define  ADC_SAM_RATE      DAQ_RATE_MAX
+// of hardware interface.
+//
+// For the ADC128S022, All 8 channels are sampled.
+// This macro controls the SCLK period for the sample
+// transfer which requires 16 clocks for a 12-Bit sample.
+// In order to fill a 1K pipe message there are 496
+// 16-Bit (only 12-bits used) samples per message.
+//
+// As an example, when operating an async COM port
+// at 115200 baud implies 115200/10 or 11.52K bytes
+// per second. A conservative transfer might be 496
+// times 5 or 2480 samples (4960 bytes plus overhead)
+// 5 pipe messages is 5K or 5120 bytes.
+// In order to achieve this rate 2480 x 16 = 39680
+// SCLKs to transfer these samples per second or
+// 25.20 us SCLK period. Hence the macro value is
+// the number of 10 ns FPGA clocks per SCLK period.
+//
+#define  ADC_SAM_RATE      2520
 
 #define  ADC_FIFO_BASE     SDRAM_FIFO_REGION_BASE
 #define  ADC_FIFO_SPAN     SDRAM_FIFO_REGION_SPAN

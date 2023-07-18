@@ -328,6 +328,7 @@ LIBSP_API int32_t libsp_init(uint32_t baudrate, uint8_t cm_port, uint8_t libsp_p
    }
    else {
       sp_close(m_libsp);
+      sp_free_port(m_libsp);
    }
 
    return result;

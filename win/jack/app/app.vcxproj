@@ -171,7 +171,7 @@
       <Message>Build Version</Message>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>copyDLLs.bat $(SolutionDir) $(Platform) $(Configuration)</Command>
+      <Command>copyDLLs.bat $(SolutionDir) $(Platform) $(Configuration) Install</Command>
       <Message>Build Version</Message>
     </PostBuildEvent>
     <PreLinkEvent>

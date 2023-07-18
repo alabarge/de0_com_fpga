@@ -132,7 +132,7 @@ SectionGroup /e "!Registry Items" SEC02
 SectionGroupEnd
 
 SectionGroup "!Runtime Libraries" SEC05
-   Section "Visual C++ 2015 Runtime Libraries, x64" SEC06
+   Section "Visual C++ 2022 Runtime Libraries, x64" SEC06
      SetOutPath "$INSTDIR"
      SetOverwrite ifnewer
      DetailPrint "Installing VC++ 2015 Runtime"
@@ -142,16 +142,16 @@ SectionGroup "!Runtime Libraries" SEC05
 SectionGroupEnd
 
 SectionGroup "!Communication Drivers" SEC08
-   Section "FTDI 2.12.28 Driver" SEC09
+   Section "FTDI 2.12.36 Driver" SEC09
      SetOverwrite ifnewer
-     File /r "CDM21228"
+     File /r "CDM21236"
    SectionEnd
-   Section "WinPcap 4.1.3" SEC010
+   Section "Npcap 1.75" SEC010
      SetOutPath "$INSTDIR"
      SetOverwrite ifnewer
-     DetailPrint "Installing WinPcap 4.1.3"
-     File "WinPcap_4_1_3.exe"
-     ExecWait "WinPcap_4_1_3.exe"
+     DetailPrint "Installing Npcap 1.75"
+     File "npcap-1.75.exe"
+     ExecWait "npcap-1.75.exe"
    SectionEnd
 SectionGroupEnd
 

@@ -4,7 +4,7 @@
  * Machine generated for CPU 'cpu' in SOPC Builder design 'de0_qsys'
  * SOPC Builder design path: D:/de0_fpga/de0_top/PR_COM/de0_qsys.sopcinfo
  *
- * Generated: Fri Jul 14 11:38:42 PDT 2023
+ * Generated: Mon Jul 17 16:36:00 PDT 2023
  */
 
 /*

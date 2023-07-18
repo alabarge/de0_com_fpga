@@ -136,9 +136,9 @@ signal debug               : std_logic_vector(3 downto 0);
    -- TEST POINTS
    --
    oTP1                 <= sw_test_bit;
-   oTP2                 <= '0';
-   oTP3                 <= iCOM_RX;
-   oTP4                 <= oCOM_TX;
+   oTP2                 <= oADC_SCLK;
+   oTP3                 <= oCOM_TX;
+   oTP4                 <= iCOM_RX;
 
    oSTDOUT_UART_GND     <= '0';
 

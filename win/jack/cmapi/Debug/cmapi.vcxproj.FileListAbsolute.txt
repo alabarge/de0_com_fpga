@@ -1,2 +1,0 @@
-D:\de0_fpga\win\jack\cmapi\Debug\cmapi.dll
-D:\de0_com_fpga\win\jack\cmapi\Debug\cmapi.dll

@@ -1,2 +1,0 @@
-D:\de0_fpga\win\jack\comapi\Debug\comapi.dll
-D:\de0_com_fpga\win\jack\comapi\Debug\comapi.dll

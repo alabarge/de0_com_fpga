@@ -205,7 +205,7 @@ void help_f(int argc, char **argv) {
    xlprint("               reg_test 0x10030014 0x01234567 1\n");
    xlprint("   mem_test    periodically write and read verify the selected memory address\n");
    xlprint("               mem_test [address] [count] [loop_ms]\n");
-   xlprint("               mem_test 0x80400000 0x400 1\n");
+   xlprint("               mem_test 0x00800000 0x400 1\n");
    xlprint("\n");
    xlprint("default loop time : %d ms\n\n", loop_ms);
    xlprint("status : \n\n");
@@ -459,7 +459,7 @@ void mem_test_f(int argc, char **argv) {
       gc.cli.loop_ms = MILLISECONDS * loop_ms;
       gc.cli.loop_snap = alt_timestamp();
       gc.cli.loop_cnt = 0;
-      gc.cli.loop_addr = 0x80400000;
+      gc.cli.loop_addr = 0x00800000;
       gc.cli.loop_val = 0x400;
       gc.cli.loop_flags = 0x0;
       if (argv[1] != NULL) sscanf(argv[1], "%lx", &gc.cli.loop_addr);
