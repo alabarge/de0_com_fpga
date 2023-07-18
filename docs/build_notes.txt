@@ -1,4 +1,4 @@
-1.    Quartus Prime Version 18.1.1 Build 646 04/11/2019 Standard Edition.
+1.    Quartus Prime Version 22.1std.1 Build 917 02/14/2023 SC Standard Edition.
 1.1   VHDL 2008, Settings -> VHDL Input
 1.2   SystemVerilog, Settings -> Verilog HDL Input
 2.    If windows app is connected then the DE0-Nano flash can't be programmed
@@ -33,11 +33,11 @@ Steps for building from clean repository
       nsis-3.06.1 or higher must be installed in order to build a release setup file.
 
 17.   THE IPP LIBRARY IS CURRENTLY NOT REQUIRED
-18.   From win\jack directory launch VS2019 using jack.sln
+18.   From win\jack directory launch VS2022 using jack.sln
 19.   Select Debug -> x64 project
 20.   Rebuild solution using Build -> Rebuild Solution
 21.   F5 to run the application
-22.   From the win\de0_cmd directory launch VS2019 using de0_cmd.sln
+22.   From the win\de0_cmd directory launch VS2022 using de0_cmd.sln
 23.   Select Debug -> x64 project
 24.   Rebuild solution using Build -> Rebuild Solution
 25.   Right click de0_cmd -> Properties
