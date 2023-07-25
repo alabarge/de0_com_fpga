@@ -121,12 +121,6 @@
     <ClInclude Include="driver\com.h">
       <Filter>Source Files\driver</Filter>
     </ClInclude>
-    <ClInclude Include="driver\wsc.h">
-      <Filter>Source Files\driver</Filter>
-    </ClInclude>
-    <ClInclude Include="driver\keycode.h">
-      <Filter>Source Files\driver</Filter>
-    </ClInclude>
     <ClInclude Include="driver\lan.h">
       <Filter>Source Files\driver</Filter>
     </ClInclude>

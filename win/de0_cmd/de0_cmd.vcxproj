@@ -21,13 +21,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -63,10 +63,10 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>.\driver</AdditionalLibraryDirectories>
-      <AdditionalDependencies>csc64.lib;wsc64.lib;wpcap64.lib;ftd2xx.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wpcap64.lib;ftd2xx.lib;libserialport.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>$(SolutionDir)..\..\utils\fw_ver.exe $(ProjectDir)build.inc $(ProjectDir)build.h</Command>
+      <Command>$(SolutionDir)..\..\utils\fw_ver.exe $(ProjectDir)build.inc $(ProjectDir)build.h $(ProjectDir)..\..\.git</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>Build Version</Message>
@@ -94,10 +94,10 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>.\driver</AdditionalLibraryDirectories>
-      <AdditionalDependencies>csc64.lib;wsc64.lib;wpcap64.lib;ftd2xx.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wpcap64.lib;ftd2xx.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;libserialport.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>$(SolutionDir)..\..\utils\fw_ver.exe $(ProjectDir)build.inc $(ProjectDir)build.h</Command>
+      <Command>$(SolutionDir)..\..\utils\fw_ver.exe $(ProjectDir)build.inc $(ProjectDir)build.h $(ProjectDir)..\..\.git</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>Build Version</Message>
@@ -140,14 +140,12 @@
     <ClInclude Include="cp_cli\cp_cli.h" />
     <ClInclude Include="driver\com.h" />
     <ClInclude Include="driver\fifo.h" />
-    <ClInclude Include="driver\keycode.h" />
     <ClInclude Include="driver\lan.h" />
     <ClInclude Include="driver\lanpkt.h" />
     <ClInclude Include="driver\opto.h" />
     <ClInclude Include="driver\timer.h" />
     <ClInclude Include="driver\udp.h" />
     <ClInclude Include="driver\udp_log.h" />
-    <ClInclude Include="driver\wsc.h" />
     <ClInclude Include="opc_srv\opc_msg.h" />
     <ClInclude Include="opc_srv\opc_srv.h" />
   </ItemGroup>
