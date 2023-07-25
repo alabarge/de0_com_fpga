@@ -637,47 +637,6 @@ void CConView::OnBnClickedConRefresh()
          }
       }
    }
-   //
-   // LIBSP DEVICE
-   //
-   else if (m_comCon == APP_CON_LIBSP) {
-      // available devices?
-      devCnt = libsp_query(&m_pLIBSPInfo);
-      if (devCnt == 0) {
-         str.Format(_T("Warning : No LIBSP Devices Available\n"));
-         pDoc->Log(str, APP_MSG_WARNING);
-      }
-      // parse device info
-      else {
-         if (devCnt <= LIBSP_MAX_DEVICES) {
-            for (i = 0, j = 0; i < LIBSP_MAX_DEVICES; i++) {
-               if (m_pLIBSPInfo[i].locid != 0) {
-                  CA2W serial(m_pLIBSPInfo[i].serial);
-                  CA2W desc(m_pLIBSPInfo[i].desc);
-                  str.Format(_T("LIBSP.%d \t:\n"), m_pLIBSPInfo[i].locid); pDoc->Log(str, APP_MSG_HIGHLITE);
-                  str.Format(_T(" flags \t: %08X\n"), m_pLIBSPInfo[i].flags);  pDoc->Log(str);
-                  str.Format(_T(" type  \t: %08X\n"), m_pLIBSPInfo[i].type);   pDoc->Log(str);
-                  str.Format(_T(" id    \t: %08X\n"), m_pLIBSPInfo[i].id);     pDoc->Log(str);
-                  str.Format(_T(" locID \t: %08X\n"), m_pLIBSPInfo[i].locid);  pDoc->Log(str);
-                  str.Format(_T(" serial\t: %s\n"), serial.m_psz);          pDoc->Log(str);
-                  str.Format(_T(" desc  \t: %s\n"), desc.m_psz);            pDoc->Log(str);
-                  str.Format(_T(" handle\t: %08X\n"), m_pLIBSPInfo[i].handle); pDoc->Log(str);
-                  // Add to ComboBox
-                  str.Format(_T("COM.%d"), m_pLIBSPInfo[i].locid);
-                  m_PortSel.AddString(str);
-                  m_PortSel.SetItemData(j++, m_pLIBSPInfo[i].locid);
-                  devFound = TRUE;
-               }
-            }
-            // Show first selection, if any
-            m_comPort = (devFound == TRUE) ? 0 : APP_PORT_NONE;
-         }
-         else {
-            str.Format(_T("Error : Maximum Attached Devices Exceeded, %d\n"), devCnt);
-            GetDoc()->Log(str, APP_MSG_ERROR);
-         }
-      }
-   }
 
    // Update Form Items
    OnUpdateConfig(FALSE);
@@ -1072,54 +1031,6 @@ void CConView::OnBnClickedConConnect()
             }
          }
       }
-      //
-      // LIBSP DEVICE
-      //
-      else if (m_comCon == APP_CON_LIBSP) {
-         // Open the LIBSP Port
-         m_nCom = APP_CON_LIBSP;
-         pMainFrm->m_nCom = APP_CON_LIBSP;
-         port = (UINT)m_PortSel.GetItemData(m_comPort);
-         speed = libsp_speed[m_comSpeed];
-         result = libsp_init(speed, CM_PORT_COM0, port);
-         // Check Device ID
-         if (result != LIBSP_OK) {
-            str.Format(_T("Error : Failed to Open LIBSP.%d Device\n"), port);
-            GetDoc()->Log(str, APP_MSG_ERROR);
-            m_nCom = APP_CON_NONE;
-            pMainFrm->m_nCom = APP_CON_NONE;
-            pMainFrm->m_nPort = APP_PORT_NONE;
-            pMainFrm->m_nPortId = 0;
-            pMainFrm->m_hCom = NULL;
-            pMainFrm->m_nComErr = 0;
-         }
-         else {
-            CA2W serial(m_pLIBSPInfo[port].desc);
-            str.Format(_T("Opened LIBSP.%d (%s) for Messaging\n"), port, serial.m_psz);
-            GetDoc()->Log(str);
-            libsp_rev(&libRev, &sysRev, &apiRev);
-            str.Format(_T("LIBSP.%d : libserialport.lib %08X, libspapi.dll %08X\n"), port, libRev, apiRev);
-            GetDoc()->Log(str);
-            libsp_sysid(&sysid, &stamp, &cmDat);
-            str.Format(_T("LIBSP.%d : sysID %d, stamp %d, cm %08X\n"), port, sysid, stamp, cmDat);
-            GetDoc()->Log(str);
-            // Assign the Type and Port
-            pMainFrm->m_nPort = m_comPort;
-            pMainFrm->m_nPortId = port;
-            pMainFrm->m_hCom = NULL;
-            pMainFrm->m_nComErr = 0;
-            // Save Serial for Device Removal Check
-            memcpy(pMainFrm->m_chSerial, m_pLIBSPInfo[port].desc, 16);
-            // Send CM Registration Request
-            cm_send_reg_req(APP_DEVID, CM_PORT_COM0, CM_REG_OPEN, (UCHAR*)dev.m_psz);
-            // Check for AutoConnect Port Change
-            if (m_autoPort != m_comPort) {
-               m_autoPort = m_comPort;
-               GetDoc()->SetModifiedFlag(TRUE);
-               OnUpdateConfig(TRUE);
-            }
-         }
-      }
    }
    //
    // DISCONNECT
@@ -1267,28 +1178,6 @@ void CConView::OnBnClickedConConnect()
          pMainFrm->m_nPortId = 0;
          pMainFrm->m_hCom    = NULL;
       }
-      //
-      // LIBSP DEVICE
-      //
-      else if (m_comCon == APP_CON_LIBSP) {
-         // Close Registration to Hardware
-         cm_send_reg_req(APP_DEVID, CM_PORT_COM0, CM_REG_CLOSE, (UCHAR*)dev.m_psz);
-         // Close the Open Port
-         port = (UINT)m_PortSel.GetItemData(m_comPort);
-         CA2W serial(m_pLIBSPInfo[port].serial);
-         str.Format(_T("Closed LIBSP.%d (%s)\n"), port, serial.m_psz);
-         GetDoc()->Log(str);
-         // Delete Serial for Device Removal Check
-         memset(pMainFrm->m_chSerial, 0, 16);
-         libsp_final();
-         // No Connection
-         m_nCom = APP_CON_NONE;
-         pMainFrm->m_nCom = APP_CON_NONE;
-         pMainFrm->m_nComErr = 0;
-         pMainFrm->m_nPort = APP_PORT_NONE;
-         pMainFrm->m_nPortId = 0;
-         pMainFrm->m_hCom = NULL;
-         }
    }
 
    // Remove Focus Square
@@ -1541,18 +1430,6 @@ void CConView::OnCbnSelchangeConPortType()
             str.Format(_T("%.1f Mbps"), (double)uart_speed[i] / 1000000);
          m_SpeedSel.AddString(str);
          j = (CFG_BAUD_RATE == uart_speed[i]) ? i : j;
-      }
-      // Select Preferred Speed, default is 0
-      m_comSpeed = j;
-   }
-   else if (m_comCon == APP_CON_LIBSP) {
-      for (i = 0, j = 0; i < DIM(libsp_speed); i++) {
-         if (libsp_speed[i] < 1000000)
-            str.Format(_T("%.1f Kbps"), (double)libsp_speed[i] / 1000);
-         else
-            str.Format(_T("%.1f Mbps"), (double)libsp_speed[i] / 1000000);
-         m_SpeedSel.AddString(str);
-         j = (CFG_BAUD_RATE == libsp_speed[i]) ? i : j;
       }
       // Select Preferred Speed, default is 0
       m_comSpeed = j;

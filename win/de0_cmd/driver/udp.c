@@ -266,7 +266,6 @@ uint32_t udp_init(uint32_t baudrate, uint8_t cm_port, uint8_t com_port,
        // Report Hardware Version
       if (gc.trace & WIN_TRACE_ID) {
          printf("Opened UDP.0 for Messaging, Connecting to %s @ %d\n", m_daddr, cm_udp_port);
-         printf("UDP.%d : csc64.lib, %s\n", m_com_port, m_librev);
          printf("UDP.%d : sysid:stamp:cm = %d:%d:%08X\n\n", m_com_port, m_sysid, m_stamp, m_cmdat);
       }
    }

@@ -88,7 +88,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Netapi32.lib;PEGRP64F.lib;cmapi.lib;comapi.lib;optoapi.lib;uartapi.lib;libspapi.lib;fifoapi.lib;lanapi.lib;udpapi.lib;wbemuuid.lib;Winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>Netapi32.lib;PEGRP64F.lib;cmapi.lib;comapi.lib;optoapi.lib;uartapi.lib;fifoapi.lib;lanapi.lib;udpapi.lib;wbemuuid.lib;Winmm.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Platform)\$(Configuration);$(SolutionDir)$(Configuration)\</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>MSVCRT;LIBCMT</IgnoreSpecificDefaultLibraries>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
@@ -147,7 +147,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Netapi32.lib;PEGRP64F.lib;cmapi.lib;comapi.lib;optoapi.lib;uartapi.lib;libspapi.lib;fifoapi.lib;lanapi.lib;udpapi.lib;wbemuuid.lib;Winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>Netapi32.lib;PEGRP64F.lib;cmapi.lib;comapi.lib;optoapi.lib;uartapi.lib;fifoapi.lib;lanapi.lib;udpapi.lib;wbemuuid.lib;Winmm.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Platform)\$(Configuration);$(SolutionDir)$(Configuration)\</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
@@ -167,7 +167,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PreBuildEvent>
-      <Command>$(SolutionDir)..\..\utils\fw_ver.exe $(ProjectDir)build.inc $(ProjectDir)build.h ..\..\.git</Command>
+      <Command>$(SolutionDir)..\..\utils\fw_ver.exe $(ProjectDir)build.inc $(ProjectDir)build.h $(SolutionDir)..\..\.git</Command>
       <Message>Build Version</Message>
     </PreBuildEvent>
     <PostBuildEvent>

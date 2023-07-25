@@ -363,8 +363,8 @@ static DWORD WINAPI fifo_thread(LPVOID data) {
 
 // 7.2.4   Data Structures
 
-   DWORD       rx_bytes, j;
-   DWORD       bytes_left;
+   uint32_t    rx_bytes = 0, j, k;
+   uint32_t    bytes_left;
    FT_STATUS   status;
    uint8_t     slotid;
    uint32_t   *buf;
@@ -459,7 +459,8 @@ static DWORD WINAPI fifo_thread(LPVOID data) {
                      slot->msglen = msg->h.msglen;
                      // read rest of CM message body, uint32_t per cycle
                      if (slot->msglen > sizeof(cm_msg_t) && (slot->msglen <= FIFO_MSGLEN_UINT8)) {
-                        for (j=0;j<(slot->msglen + 3 - sizeof(cm_msg_t)) >> 2;j++) {
+                        k = (slot->msglen + 3 - sizeof(cm_msg_t)) >> 2;
+                        for (j=0;j<k;j++) {
                            slot->buf[j + (sizeof(cm_msg_t) >> 2)] =
                                  buf[j + (sizeof(cm_msg_t) >> 2)];
                         }

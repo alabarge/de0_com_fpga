@@ -27,9 +27,6 @@
     <ClInclude Include="build.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="wsc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="comapi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -51,9 +48,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="trace.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="enumser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

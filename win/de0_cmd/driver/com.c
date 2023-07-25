@@ -68,8 +68,6 @@
 // 4.1  Include Files
 
 #include "main.h"
-#include "wsc.h"
-#include "keycode.h"
 
 // 4.2   External Data Structures
 
@@ -99,13 +97,16 @@
    static   uint8_t          *m_blk_pipe = NULL;
    static   uint8_t           m_end_thread = FALSE;
    static   uint32_t          m_pktcnt = 0;
+   static   uint32_t          m_cmcnt = 0;
+   static   uint32_t          m_dropcnt = 0;
    static   uint32_t          m_head = 0;
 
    static   uint32_t          m_sysid, m_stamp, m_cmdat;
    static   uint8_t           m_devid, m_numobjs, m_numcons;
    static   int32_t           m_librev, m_sysrev;
 
-   static   int32_t           m_com = -1;
+   static   struct sp_port    *m_com;
+   static   struct sp_event_set  *m_event;
 
    static   UCHAR             m_query[] = {0x7E, 0x83, 0x83, 0x10, 0x10, 0x00, 0x00,
                                            0x0C, 0x20, 0x83, 0x09, 0x00, 0x00, 0x7D};
@@ -138,115 +139,81 @@ uint32_t com_init(uint32_t baudrate, uint8_t cm_port, uint8_t com_port) {
 // 7.1.4   Data Structures
 
    uint32_t    result = COM_OK;
-   int32_t     status;
    int32_t     sent, recv;
-   UCHAR       resp[COM_RESP], msg[COM_RESP];
+   UCHAR       resp[COM_RESP] = {0}, msg[COM_RESP] = {0};
+   CHAR        com[8] = {0};
    uint8_t     retry = 0;
    int32_t     i,k;
 
 // 7.1.5   Code
 
-   // Update COM Port
-   m_com = com_port -1;
-
-   // Issue Serial I/O Driver Keycode
-   status = SioKeyCode(WSC_KEY_CODE);
-   if (status < 0)    result |= COM_ERR_KEYCODE;
-   if (status != 999) result |= COM_ERR_KEYCODE;
+   if (baudrate == 0) result |= COM_ERR_BAUDRATE;
 
    if (result == COM_OK) {
       printf("\ncom_init() selected port = %d\n", com_port);
-      // Overlapped I/O
-      status  = SioSetInteger(-1, 'O', 1);
-
-      // Reset Serial I/O Port
-      status  = SioReset(m_com, COM_RX_Q_SIZE, COM_TX_Q_SIZE);
-
-      // If Open already then close the port
-      if (status == WSC_IE_OPEN) SioDone(m_com);
-
-      // Purge Queues
-      SioRxClear(m_com);
-      SioTxClear(m_com);
-
-      // Serial I/O Port Baudrate
-      status |= SioBaud(m_com, baudrate);
-
-      // Serial I/O Port Parameters
-      status |= SioParms(m_com, WSC_NoParity, WSC_TwoStopBits, WSC_WordLength8);
-
-      // Set DTR and RTS
-      status |= SioDTR(m_com, 'S');
-      status |= SioRTS(m_com, 'S');
-
-      // Check return status from COM
-      if (status < 0) result |= COM_ERR_OPEN;
+      // Open Port for Read/Write, 8N1
+      sprintf_s(com, sizeof(com), "COM%d", com_port);
+      if (sp_get_port_by_name(com, &m_com) == SP_OK) {
+         result |= (sp_open(m_com, SP_MODE_READ_WRITE) == SP_OK) ? COM_OK : COM_ERR_OPEN;
+         result |= (sp_set_baudrate(m_com, baudrate) == SP_OK)   ? COM_OK : COM_ERR_BAUDRATE;
+         result |= (sp_set_bits(m_com, 8) == SP_OK)              ? COM_OK : COM_ERR_OPEN;
+         result |= (sp_set_parity(m_com, SP_PARITY_NONE) == SP_OK) ? COM_OK : COM_ERR_OPEN;
+         result |= (sp_set_stopbits(m_com, 1) == SP_OK)          ? COM_OK : COM_ERR_OPEN;
+         result |= (sp_set_flowcontrol(m_com, SP_FLOWCONTROL_NONE) == SP_OK) ? COM_OK : COM_ERR_OPEN;
+         result |= (sp_flush(m_com, SP_BUF_BOTH) == SP_OK)       ? COM_OK : COM_ERR_OPEN;
+      }
+      else
+         result |= COM_ERR_OPEN;
    }
-
+   
    // Device Opened
-   if (result == COM_OK && m_com != -1) {
+   if (result == COM_OK) {
 
       // Purge Queues
-      SioRxClear(m_com);
-      SioTxClear(m_com);
+      sp_flush(m_com, SP_BUF_BOTH);
 
       while (retry < COM_RETRIES) {
 
          result |= COM_ERR_RESP;
 
          // Send CM_QUERY_REQ to validate connection
-         cm_crc((pcm_msg_t)&m_query[1], CM_CALC_CRC);
-         sent = SioPuts(m_com, (CHAR *)m_query, sizeof(m_query));
-         // report message content
-         if ((gc.trace & WIN_TRACE_UART)) {
-            printf("com_init() tx msglen = %d\n", (int)sizeof(m_query));
-            dump((uint8_t *)m_query, sizeof(m_query), 0, 0);
-         }
+         sent = sp_blocking_write(m_com, (CHAR *)m_query, sizeof(m_query), 1000);
+         Sleep(100);
 
-         // If sent OK then check response
-         if (sent == sizeof(m_query)) {
-            // Allow time for Response
-            Sleep(100);
-            // Read the Port
-            recv = SioGets(m_com, (CHAR *)resp, sizeof(resp));
-            // report message content
-            if ((gc.trace & WIN_TRACE_UART)) {
-               printf("com_init() rx msglen = %d\n", recv);
-               dump((uint8_t *)resp, recv, 0, 0);
-            }
-            // Check Response
-            if (recv != 0) {
-               // Check SOF & EOF
-               if (resp[0] == COM_SOF && resp[recv-1] == COM_EOF) {
-                  // Remove HDLC Coding
-                  for (i=1,k=0;i<(recv-1);i++) {
-                     if (resp[i] == COM_ESC) {
-                        msg[k++] = resp[i+1] ^ COM_BIT;
-                        i++;
-                     }
-                     else {
-                        msg[k++] = resp[i];
-                     }
-                  }
-                  // Verify Magic Number
-                  if (msg[12] == 0x34 && msg[13] == 0x12 &&
-                      msg[14] == 0xAA && msg[15] == 0x55) {
-                     // Purge Queues
-                     SioRxClear(m_com);
-                     SioTxClear(m_com);
-                     // Record SysID
-                     m_sysid = (msg[19] << 24) | (msg[18] << 16) | (msg[17] << 8) | msg[16];
-                     // Record Timestamp
-                     m_stamp = (msg[23] << 24) | (msg[22] << 16) | (msg[21] << 8) | msg[20];
-                     // Record Device ID, etc.
-                     m_devid    = msg[24];
-                     m_numobjs  = msg[25];
-                     m_numcons  = msg[26];
-                     m_cmdat    = (m_devid << 24) | (m_numobjs << 16) | (m_numcons << 8);
-                     result = COM_OK;
-                     break;
-                  }
+         // Read Response
+         recv = sp_blocking_read(m_com, (CHAR *)resp, sizeof(resp), 1000);
+
+         // Validate
+         if (recv == 0) result |= COM_ERR_RESP;
+
+         // Check SOF & EOF
+         if (resp[0] == COM_START_FRAME && resp[recv-1] == COM_END_FRAME) {
+            // Remove HDLC Coding
+            for (i=1,k=0;i<(recv-1);i++) {
+               if (resp[i] == COM_ESCAPE) {
+                  msg[k++] = resp[i+1] ^ COM_STUFFED_BIT;
+                  i++;
                }
+               else {
+                  msg[k++] = resp[i];
+               }
+            }
+            // Verify Magic Number
+            if (msg[12] == 0x34 && msg[13] == 0x12 &&
+                msg[14] == 0xAA && msg[15] == 0x55) {
+               // Purge Queues
+               sp_flush(m_com, SP_BUF_BOTH);
+               // Record SysID
+               m_sysid = (msg[19] << 24) | (msg[18] << 16) | (msg[17] << 8) | msg[16];
+               // Record Timestamp
+               m_stamp = (msg[23] << 24) | (msg[22] << 16) | (msg[21] << 8) | msg[20];
+               // Record Device ID, etc.
+               m_devid    = msg[24];
+               m_numobjs  = msg[25];
+               m_numcons  = msg[26];
+               m_cmdat    = (m_devid << 24) | (m_numobjs << 16) | (m_numcons << 8);
+               result = COM_OK;
+               break;
             }
          }
          retry++;
@@ -254,11 +221,11 @@ uint32_t com_init(uint32_t baudrate, uint8_t cm_port, uint8_t com_port) {
    }
 
    // OK to Continue
-   if (result == COM_OK && m_com != -1) {
+   if (result == COM_OK) {
 
       // Serial I/O Version and Build
-      m_librev = SioInfo('V');
-      m_sysrev = SioInfo('B');
+      m_librev = SP_LIB_VERSION_CURRENT;
+      m_sysrev = SP_LIB_VERSION_REVISION;
 
       // Init the Mutex's
       InitializeCriticalSection (&m_tx_mutex);
@@ -270,16 +237,17 @@ uint32_t com_init(uint32_t baudrate, uint8_t cm_port, uint8_t com_port) {
       cm_ioreg(com_cmio, m_cm_port, CM_MEDIA_COM);
 
       // Allocate Pipe Message Pool
-      m_pool  = malloc(COM_PIPE_SLOTS * COM_PIPELEN_UINT8);
+      m_pool  = (uint8_t *)malloc(COM_POOL_SLOTS * COM_PIPELEN_UINT8);
+      if (m_pool == NULL) result = COM_ERR_POOL;
 
-      if (m_pool == NULL) {
-         result = COM_ERR_POOL;
-      }
+      // Events
+      sp_new_event_set(&m_event);
+      sp_add_port_events(m_event, m_com, SP_EVENT_RX_READY);
 
       // Start the H/W Receive Thread
       m_end_thread = FALSE;
       if ((m_thread = CreateThread(NULL, 0, com_thread, NULL, 0, &m_tid)) == NULL) {
-         result = CFG_ERROR_COM;
+         result = COM_ERR_THREAD;
       }
       else {
          SetThreadPriority(&m_tid, THREAD_PRIORITY_NORMAL);
@@ -288,9 +256,12 @@ uint32_t com_init(uint32_t baudrate, uint8_t cm_port, uint8_t com_port) {
        // Print Hardware Version to Serial Port
       if (gc.trace & WIN_TRACE_ID) {
          printf("Opened COM.%d for Messaging\n", com_port);
-         printf("COM.%d : wsc64.lib = %08X\n", com_port, m_librev);
          printf("COM.%d : sysid:stamp:cm = %d:%d:%08X\n\n", com_port, m_sysid, m_stamp, m_cmdat);
       }
+   }
+   else {
+      sp_close(m_com);
+      sp_free_port(m_com);
    }
 
    if ((gc.trace & WIN_TRACE_ERROR) && result != COM_OK) {
@@ -327,17 +298,11 @@ static DWORD WINAPI com_thread(LPVOID data) {
 
 // 7.2.4   Data Structures
 
-   int32_t     rx_bytes, i, j, k;
+   DWORD       rx_bytes, i;
    uint8_t     raw[COM_PIPELEN_UINT8 * 2];
-   uint32_t    buf[COM_PIPELEN_UINT8 >> 2];
-   uint8_t     *buf_u8 = (uint8_t *)buf;
-   uint8_t     esc = 0, newmsg = 0;
-   int32_t     status;
-   uint8_t     type = COM_EPID_NONE;
-   uint8_t     slotid;
+   uint8_t     *buf = NULL;
    uint32_t    head = 0;
-   pcmq_t      slot;
-   pcm_msg_t   msg;
+   com_rxq_t   rxq = {0};
 
    pcm_pipe_daq_t  pipe;
 
@@ -348,152 +313,181 @@ static DWORD WINAPI com_thread(LPVOID data) {
    }
 
    // Purge Queues
-   SioRxClear(m_com);
-   SioTxClear(m_com);
+   sp_flush(m_com, SP_BUF_BOTH);
 
    // beginning of PIPE message circular buffer
    m_nxt_pipe  = m_pool;
    m_blk_pipe  = m_pool;
    m_head      = 0;
 
-   // clear staging buffer
-   memset(buf, 0, sizeof(buf));
+   m_pktcnt = 0;
+   m_cmcnt  = 0;
 
    while (m_end_thread == FALSE) {
-      rx_bytes = SioRxQue(m_com);
-      if (rx_bytes == 0)
-         status = SioEventWait(m_com, EV_RXCHAR, COM_THREAD_TIMEOUT);
-      rx_bytes = SioRxQue(m_com);
-      // timeout
-      if (status == WSC_IO_PENDING && rx_bytes == 0) continue;
-      // event error
-      if (status == WSC_IO_ERROR) {
-         m_end_thread = TRUE;
-         continue;
-      }
+      rx_bytes = sp_input_waiting(m_com);
+      if (rx_bytes == 0) sp_wait(m_event, 1000);
+      rx_bytes = sp_input_waiting(m_com);
+      //
+      // HDLC DECODING
+      //
       if (rx_bytes != 0 && m_end_thread == FALSE) {
          // prevent buffer overflow, account for encoding
          rx_bytes = (rx_bytes > (COM_PIPELEN_UINT8 * 2)) ? COM_PIPELEN_UINT8 * 2 : rx_bytes;
          memset(raw, 0, sizeof(raw));
-         rx_bytes = SioGets(m_com, (CHAR *)raw, rx_bytes);
+         rx_bytes = sp_blocking_read(m_com, (CHAR *)raw, rx_bytes, 1000);
          if ((rx_bytes > 0) && (m_end_thread != TRUE)) {
             for (i=0;i<rx_bytes;i++) {
-               //
-               // HDLC END-OF-FILE
-               //
-               if (raw[i] == COM_EOF && newmsg == 1) {
-                  //
-                  // CONTROL MESSAGE
-                  //
-                  if (type == COM_EPID_CTL) {
-                     slot = cm_alloc();
-                     if (slot != NULL) {
-                        msg = (pcm_msg_t)slot->buf;
-                        // preserve slotid
-                        slotid = msg->h.slot;
-                        // uint32_t boundary, copy multiple of 32-bits
-                        // always read CM header + parms in order
-                        // to determine message length
-                        for (j=0;j<sizeof(cm_msg_t) >> 2;j++) {
-                           slot->buf[j] = buf[j];
+               // handle restart outside of switch
+               if (raw[i] == COM_START_FRAME) {
+                  rxq.state = COM_RX_IDLE;
+                  rxq.count = 0;
+                  if (rxq.slot != NULL) {
+                     cm_free((pcm_msg_t)rxq.slot->buf);
+                     rxq.slot = NULL;
+                  }
+               }
+               switch (rxq.state) {
+                  case COM_RX_IDLE :
+                     // all messages begin with COM_START_FRAME
+                     // drop all characters until start-of-frame
+                     if (raw[i] == COM_START_FRAME) {
+                        rxq.state = COM_RX_TYPE;
+                     }
+                     break;
+                  case COM_RX_TYPE :
+                     if (raw[i] != CM_ID_PIPE) {
+                        // allocate slot from cmq
+                        rxq.slot = cm_alloc();
+                        if (rxq.slot != NULL) {
+                           rxq.state  = COM_RX_MSG;
+                           rxq.count  = 0;
+                           rxq.msg = (pcm_msg_t)rxq.slot->buf;
+                           // preserve q slot id
+                           rxq.slotid = rxq.msg->h.slot;
+                           buf = (uint8_t *)rxq.slot->buf;
+                           buf[rxq.count++] = raw[i];
                         }
-                        slot->msglen = msg->h.msglen;
-                        // read rest of CM message body, uint32_t per cycle
-                        if (slot->msglen > sizeof(cm_msg_t) && (slot->msglen <= COM_MSGLEN_UINT8)) {
-                           for (j=0;j<(slot->msglen + 3 - sizeof(cm_msg_t)) >> 2;j++) {
-                              slot->buf[j + (sizeof(cm_msg_t) >> 2)] =
-                                    buf[j + (sizeof(cm_msg_t) >> 2)];
-                           }
+                        else {
+                           // no room at the inn, drop the entire message
+                           rxq.state = COM_RX_IDLE;
+                           rxq.count = 0;
+                           m_dropcnt++;
                         }
-                        // restore slotid
-                        msg->h.slot = slotid;
-                        // clear staging buffer
-                        memset(buf, 0, sizeof(buf));
+                     }
+                     else {
+                        rxq.state = COM_RX_PIPE;
+                        m_nxt_pipe[rxq.count++] = raw[i];
+                     }
+                     break;
+                  case COM_RX_MSG :
+                     // unstuff next octet
+                     if (raw[i] == COM_ESCAPE) {
+                        rxq.state = COM_RX_MSG_ESC;
+                     }
+                     // end-of-frame
+                     else if (raw[i] == COM_END_FRAME) {
+                        // restore q slot id
+                        rxq.msg->h.slot  = rxq.slotid;
+                        rxq.slot->msglen = rxq.msg->h.msglen;
                         // validate message length
-                        if (msg->h.msglen >= sizeof(cm_msg_t) &&
-                            msg->h.msglen <= CM_MAX_MSG_INT8U) {
-                           // report message content
-                           if ((gc.trace & WIN_TRACE_UART) && (slot != NULL)) {
-                              printf("com_thread() msglen = %d\n", msg->h.msglen);
-                              dump((uint8_t *)slot->buf, slot->msglen, LIB_ASCII, 0);
-                           }
+                        if (rxq.msg->h.msglen >= sizeof(cm_msg_t) &&
+                            rxq.msg->h.msglen <= CM_MAX_MSG_INT8U) {
                            // queue the message
-                           cm_qmsg((pcm_msg_t)slot->buf);
+                           cm_qmsg((pcm_msg_t)rxq.slot->buf);
+                           rxq.state = COM_RX_IDLE;
+                           rxq.count = 0;
+                           m_cmcnt++;
+                           rxq.slot  = NULL;
+                        }
+                        // drop the mal-formed message
+                        else {
+                           cm_free((pcm_msg_t)rxq.slot->buf);
+                           rxq.state = COM_RX_IDLE;
+                           rxq.count = 0;
+                           m_dropcnt++;
+                           rxq.slot  = NULL;
                         }
                      }
-                  }
-                  //
-                  // PIPE MESSAGE
-                  //
-                  else if (type == COM_EPID_PIPE) {
-                     pipe = (pcm_pipe_daq_t)m_nxt_pipe;
-                     // packet arrival
-                     pipe->stamp_us = (uint32_t)tmr_get_elapsed_microseconds();
-                     // next slot in circular buffer
-                     if (++m_head == COM_PIPE_SLOTS) m_head = 0;
-                     m_nxt_pipe = m_pool + (m_head * COM_PIPELEN_UINT8);
-                     // last packet in block?
-                     if (++m_pktcnt == COM_PACKET_CNT) {
-                        m_pktcnt = 0;
-                        // report partial pipe content
-                        if (gc.trace & WIN_TRACE_PIPE) {
-                           printf("com_thread() pipelen = %d\n", COM_BLOCK_LEN);
-                           dump(m_blk_pipe, 32, LIB_ASCII, 0);
+                     else {
+                        // store message octet
+                        buf[rxq.count] = raw[i];
+                        // buffer length exceeded, drop the entire message
+                        if (++rxq.count > COM_PIPELEN_UINT8) {
+                           rxq.state = COM_RX_IDLE;
+                           rxq.count = 0;
+                           m_dropcnt++;
+                           if (rxq.slot != NULL) {
+                              cm_free((pcm_msg_t)rxq.slot->buf);
+                              rxq.slot = NULL;
+                           }
                         }
-                        // send pipe message
-                        cm_pipe_send((pcm_pipe_t)m_blk_pipe, COM_BLOCK_LEN);
-                        // record next start of block
-                        m_blk_pipe = m_nxt_pipe;
                      }
-                  }
-                  newmsg = 0;
-               }
-               //
-               // HDLC SOF
-               //
-               else if (raw[i] == COM_SOF) {
-                  k      = 0;
-                  esc    = 0;
-                  newmsg = 1;
-                  type   = COM_EPID_NEXT;
-               }
-               //
-               // CTL OR PIPE
-               //
-               else if (type == COM_EPID_NEXT) {
-                  type = (raw[i] == CM_ID_PIPE) ? COM_EPID_PIPE : COM_EPID_CTL;
-                  // store cmid
-                  if (type == COM_EPID_PIPE)
-                     m_nxt_pipe[k++] = raw[i];
-                  else
-                     buf_u8[k++] = raw[i];
-               }
-               //
-               // HDLC ESC
-               //
-               else if (raw[i] == COM_ESC) {
-                  // unstuff next byte
-                  esc = 1;
-               }
-               //
-               // HDLC UNSTUFF OCTET
-               //
-               else if (esc == 1) {
-                  esc = 0;
-                  // unstuff byte
-                  if (type == COM_EPID_PIPE)
-                     m_nxt_pipe[k++] = raw[i] ^ COM_BIT;
-                  else
-                     buf_u8[k++] = raw[i] ^ COM_BIT;
-               }
-               //
-               // NORMAL INCOMING OCTET
-               //
-               else {
-                  if (type == COM_EPID_PIPE)
-                     m_nxt_pipe[k++] = raw[i];
-                  else
-                     buf_u8[k++] = raw[i];
+                     break;
+                  case COM_RX_MSG_ESC :
+                     // unstuff octet
+                     buf[rxq.count] = raw[i] ^ COM_STUFFED_BIT;
+                     // buffer length exceeded, drop the entire message
+                     if (++rxq.count > COM_PIPELEN_UINT8) {
+                        rxq.state = COM_RX_IDLE;
+                        rxq.count = 0;
+                        m_dropcnt++;
+                        if (rxq.slot != NULL) {
+                           cm_free((pcm_msg_t)rxq.slot->buf);
+                        }
+                     }
+                     else {
+                        rxq.state = COM_RX_MSG;
+                     }
+                     break;
+                  case COM_RX_PIPE :
+                     // unstuff next octet
+                     if (raw[i] == COM_ESCAPE) {
+                        rxq.state = COM_RX_PIPE_ESC;
+                     }
+                     // end-of-frame
+                     else if (raw[i] == COM_END_FRAME) {
+                        pipe = (pcm_pipe_daq_t)m_nxt_pipe;
+                        // packet arrival
+                        pipe->stamp_us = (uint32_t)tmr_get_elapsed_microseconds();
+                        // next slot in circular buffer
+                        if (++m_head == COM_POOL_SLOTS) m_head = 0;
+                        m_nxt_pipe = m_pool + (m_head * COM_PIPELEN_UINT8);
+                        // last packet in block?
+                        if (++m_pktcnt == COM_PACKET_CNT) {
+                           m_pktcnt = 0;
+                           // send pipe message
+                           cm_pipe_send((pcm_pipe_t)m_blk_pipe, COM_BLOCK_LEN);
+                           // record next start of block
+                           m_blk_pipe = m_nxt_pipe;
+                        }
+                        rxq.state = COM_RX_IDLE;
+                        rxq.count = 0;
+                     }
+                     else {
+                        // store pipe octet
+                        m_nxt_pipe[rxq.count] = raw[i];
+                        // buffer length exceeded, drop the entire message
+                        if (++rxq.count > COM_PIPELEN_UINT8) {
+                           rxq.state = COM_RX_IDLE;
+                           rxq.count = 0;
+                           m_dropcnt++;
+                        }
+                     }
+                     break;
+                  case COM_RX_PIPE_ESC :
+                     // unstuff octet
+                     m_nxt_pipe[rxq.count] = raw[i] ^ COM_STUFFED_BIT;
+                     // buffer length exceeded, drop the entire message
+                     if (++rxq.count > COM_PIPELEN_UINT8) {
+                        rxq.state = COM_RX_IDLE;
+                        rxq.count = 0;
+                        m_dropcnt++;
+                     }
+                     else {
+                        rxq.state = COM_RX_PIPE;
+                     }
+                     break;
+
                }
             }
          }
@@ -550,24 +544,24 @@ void com_tx(pcm_msg_t msg) {
 
    buf = (uint8_t *)calloc(COM_MSGLEN_UINT8 * 2, sizeof(uint8_t));
 
-   buf[j++] = COM_SOF;
+   buf[j++] = COM_START_FRAME;
    for (i=0;i<msg->h.msglen;i++) {
-      if (out[i] == COM_SOF || out[i] == COM_EOF || out[i] == COM_ESC) {
-         buf[j++] = COM_ESC;
-         buf[j++] = out[i] ^ COM_BIT;
+      if (out[i] == COM_START_FRAME || out[i] == COM_END_FRAME || out[i] == COM_ESCAPE) {
+         buf[j++] = COM_ESCAPE;
+         buf[j++] = out[i] ^ COM_STUFFED_BIT;
       }
       else {
          buf[j++] = out[i];
       }
    }
-   buf[j++] = COM_EOF;
+   buf[j++] = COM_END_FRAME;
    bytes_left = j;
-   bytes_sent = SioPuts(m_com, (CHAR *)buf, bytes_left);
+   bytes_sent = sp_blocking_write(m_com, (CHAR *)buf, bytes_left, 1000);
    bytes_left -= bytes_sent;
    //retry
    while (bytes_left != 0 && retry < COM_RETRIES) {
-      Sleep(10);
-      bytes_sent = SioPuts(m_com, (CHAR *)&buf[j - bytes_left], bytes_left);
+      Sleep(1);
+      bytes_sent = sp_blocking_write(m_com, (CHAR *)buf[j - bytes_left], bytes_left, 1000);
       bytes_left -= bytes_sent;
       retry++;
    }
@@ -684,13 +678,16 @@ void com_final(void) {
 
    // Wake-up Thread and Cancel
    m_end_thread = TRUE;
-   SioSetInteger(m_com,'S',1);
 
    // Close COM
-   SioDone(m_com);
+   sp_free_event_set(m_event);
+   sp_close(m_com);
+   sp_free_port(m_com);
 
    // Release Memory
-   free(m_pool);
+   if (m_pool != NULL) free(m_pool);
+
+   m_pool = NULL;
 
 } // end com_final()
 

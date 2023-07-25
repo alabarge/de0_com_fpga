@@ -614,8 +614,6 @@ BEGIN
 0x4f43, 0x004d, 
     IDC_CON_PORT_TYPE, 0x403, 5, 0
 0x4155, 0x5452, "\000" 
-    IDC_CON_PORT_TYPE, 0x403, 6, 0
-0x494c, 0x5342, 0x0050, 
     IDC_CON_PORT_TYPE, 0x403, 5, 0
 0x504f, 0x4f54, "\000" 
     IDC_CON_PORT_TYPE, 0x403, 5, 0
@@ -1054,7 +1052,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDC_DAQ_PACKETS         "Number of 1K Packets to Collect, Minimum is 32 (0 is Continuous Sampling)"
+    IDC_DAQ_PACKETS         "Number of 1K Packets to Collect, Minimum is 4 (0 is Continuous Sampling)"
 END
 
 STRINGTABLE

@@ -35,13 +35,13 @@ typedef struct _com_dev_info_t {
 #define  COM_ERR_DEV          0x80004000
 #define  COM_ERR_DEV_CNT      0x80008000
 #define  COM_ERR_POOL         0x80010000
-#define  COM_ERR_KEYCODE      0x80020000
+#define  COM_ERR_BAUDRATE     0x80020000
 
 #define  COM_MSGLEN_UINT8     512
 #define  COM_MSGLEN_UINT32    (COM_MSGLEN_UINT8 >> 2)
 #define  COM_POOL_SLOTS       256
 #define  COM_PIPELEN_UINT8    1024
-#define  COM_PACKET_CNT       32
+#define  COM_PACKET_CNT       4
 #define  COM_BLOCK_LEN        (COM_PACKET_CNT * COM_PIPELEN_UINT8)
 
 #define  COM_MAX_DEVICES      256

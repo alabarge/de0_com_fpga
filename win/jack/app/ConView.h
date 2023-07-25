@@ -7,7 +7,6 @@
 #include "comapi.h"
 #include "optoapi.h"
 #include "uartapi.h"
-#include "libspapi.h"
 #include "fifoapi.h"
 #include "lanapi.h"
 #include "udpapi.h"
@@ -71,7 +70,6 @@ protected:
    fifo_dev_info_t  *m_pFIFOInfo;
    com_dev_info_t   *m_pCOMInfo;
    lan_dev_info_t   *m_pLANInfo;
-   libsp_dev_info_t *m_pLIBSPInfo;
 
    INT            m_comPort;
    INT            m_comSpeed;

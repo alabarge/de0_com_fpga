@@ -790,8 +790,8 @@ uint32_t opc_write_file(pcm_pipe_daq_t pipe) {
    uint32_t    i,j,l,m;
    int32_t     k;
    char        line[1024];
-   float       samf[16];
-   int32_t     sami[16];
+   float       samf[16] = {0};
+   int32_t     sami[16] = {0};
 
 // 7.8.5   Code
 

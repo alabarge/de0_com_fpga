@@ -105,12 +105,11 @@
 #define  APP_CON_NONE           -1
 #define  APP_CON_COM             0
 #define  APP_CON_UART            1
-#define  APP_CON_LIBSP           2
-#define  APP_CON_OPTO            3
-#define  APP_CON_FIFO            4
-#define  APP_CON_LAN             5
-#define  APP_CON_UDP             6
-#define  APP_CON_TCP             7
+#define  APP_CON_OPTO            2
+#define  APP_CON_FIFO            3
+#define  APP_CON_LAN             4
+#define  APP_CON_UDP             5
+#define  APP_CON_TCP             6
 
 #define  APP_DEVID               CM_DEV_DE0
 

@@ -13,10 +13,10 @@ typedef struct _com_dev_info_t {
    void       *handle;
 } com_dev_info_t, *pcom_dev_info_t;
 
-#define  COM_SOF              0x7E
-#define  COM_EOF              0x7D
-#define  COM_ESC              0x7C
-#define  COM_BIT              0x20
+#define  COM_START_FRAME      0x7E
+#define  COM_END_FRAME        0x7D
+#define  COM_ESCAPE           0x7C
+#define  COM_STUFFED_BIT      0x20
 
 #define  COM_OK               0x00000000
 #define  COM_ERROR            0x80000001
@@ -36,13 +36,13 @@ typedef struct _com_dev_info_t {
 #define  COM_ERR_DEV          0x80004000
 #define  COM_ERR_DEV_CNT      0x80008000
 #define  COM_ERR_POOL         0x80010000
-#define  COM_ERR_KEYCODE      0x80020000
+#define  COM_ERR_BAUDRATE     0x80020000
 
 #define  COM_MSGLEN_UINT8     512
 #define  COM_MSGLEN_UINT32    (COM_MSGLEN_UINT8 >> 2)
-#define  COM_PIPE_SLOTS       256
+#define  COM_POOL_SLOTS       256
 #define  COM_PIPELEN_UINT8    1024
-#define  COM_PACKET_CNT       32
+#define  COM_PACKET_CNT       4
 #define  COM_BLOCK_LEN        (COM_PACKET_CNT * COM_PIPELEN_UINT8)
 
 #define  COM_MAX_DEVICES      256
@@ -56,6 +56,37 @@ typedef struct _com_dev_info_t {
 #define  COM_EPID_NEXT        0x20
 #define  COM_EPID_CTL         0x40
 #define  COM_EPID_PIPE        0x80
+
+#define  COM_TX_QUE           8
+#define  COM_RX_QUE           1
+
+#define  COM_RX_IDLE          0
+#define  COM_RX_TYPE          1
+#define  COM_RX_MSG           2
+#define  COM_RX_MSG_ESC       3
+#define  COM_RX_PIPE          4
+#define  COM_RX_PIPE_ESC      5
+
+// receive queue
+typedef struct _com_rxq_t {
+	uint8_t       state;
+	uint16_t      count;
+	uint8_t       slotid;
+	uint8_t       type;
+	pcmq_t        slot;
+	pcm_msg_t     msg;
+} com_rxq_t,    *pcom_rxq_t;
+
+// transmit queue
+typedef struct _com_txq_t {
+	uint8_t       state;
+	uint8_t       head;
+	uint8_t       tail;
+	uint8_t      *buf[COM_TX_QUE];
+	uint8_t       slots;
+	uint16_t      len[COM_TX_QUE];
+	uint16_t      n;
+} com_txq_t,    *pcom_txq_t;
 
 uint32_t  com_init(uint32_t baudrate, uint8_t cm_port, uint8_t com_port);
 void      com_tx(pcm_msg_t msg);

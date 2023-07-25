@@ -72,7 +72,7 @@ typedef struct _daq_error_table_t {
 #define DAQ_MAX_SAM        (DAQ_MAX_LEN / DAQ_MAX_CH)
 
 // Pipe message pooling
-#define DAQ_MAX_PIPE_RUN   32
+#define DAQ_MAX_PIPE_RUN   4
 
 // 2.5V / 2^12 (12-Bit ADC), Internal Reference
 #define DAQ_LSB            (2.5 / 4096.0)

@@ -4,7 +4,7 @@
 //
 //      Auto Generated from Quartus II 64-Bit Version 22.1std.1 Build 917
 //
-//      16:34 17.JUL.23 - Aaron
+//      11:42 25.JUL.23 - Aaron
 //----------------------------------------------------------------------------
 
 #pragma once
@@ -12,7 +12,7 @@
 #define FPGA_PRESENT_ID     28
 #define FPGA_MAP_VER        1
 #define FPGA_LOGIC_VER      2
-#define FPGA_CHECKSUM       0x011E718A
-#define FPGA_CRC            0x4BE2CC33
-#define FPGA_MD5            18c7d0f8f50b63c6759adb61f1e95269
+#define FPGA_CHECKSUM       0x011DE627
+#define FPGA_CRC            0x86DBBA0A
+#define FPGA_MD5            07faae4a3f1221bebefdbfc68b3a94a5
 
