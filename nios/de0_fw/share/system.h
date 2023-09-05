@@ -1,10 +1,10 @@
 /*
  * system.h - SOPC Builder system and BSP software package information
  *
- * Machine generated for CPU 'cpu' in SOPC Builder design 'de0_qsys'
- * SOPC Builder design path: D:/de0_fpga/de0_top/PR_COM/de0_qsys.sopcinfo
+ * Machine generated for CPU 'cpu' in SOPC Builder design 'de0_fpga'
+ * SOPC Builder design path: D:/de0_com_fpga/de0_top/PR_RF/de0_fpga.sopcinfo
  *
- * Generated: Tue Jul 25 11:43:25 PDT 2023
+ * Generated: Tue Sep 05 09:39:23 PDT 2023
  */
 
 /*
@@ -139,7 +139,7 @@
  *
  */
 
-#define __ADC_128
+#define __ADC
 #define __ALTERA_AVALON_EPCS_FLASH_CONTROLLER
 #define __ALTERA_AVALON_PIO
 #define __ALTERA_AVALON_TIMER
@@ -185,7 +185,7 @@
 #define ALT_STDOUT_IS_UART
 #define ALT_STDOUT_PRESENT
 #define ALT_STDOUT_TYPE "altera_avalon_uart"
-#define ALT_SYSTEM_NAME "de0_qsys"
+#define ALT_SYSTEM_NAME "de0_fpga"
 #define ALT_SYS_CLK_TICKS_PER_SEC SYSCLK_TICKS_PER_SEC
 #define ALT_TIMESTAMP_CLK_TIMER_DEVICE_TYPE SYSTIMER_TIMER_DEVICE_TYPE
 
@@ -200,8 +200,8 @@
 #define ADC_IRQ_INTERRUPT_CONTROLLER_ID 0
 #define ADC_NAME "/dev/adc"
 #define ADC_SPAN 8192
-#define ADC_TYPE "adc_128"
-#define ALT_MODULE_CLASS_adc adc_128
+#define ADC_TYPE "adc"
+#define ALT_MODULE_CLASS_adc adc
 
 
 /*

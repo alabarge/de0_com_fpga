@@ -2,11 +2,12 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>May 1, 2021 9:04:40 AM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1619885080672</BspGeneratedUnixTimeStamp>
-        <BspGeneratedLocation>D:\de0_fpga\de0_top\PR_RF\software\de0_bsp</BspGeneratedLocation>
+        <BspGeneratedTimeStamp>Sep 5, 2023 9:39:23 AM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1693931963459</BspGeneratedUnixTimeStamp>
+        <BspGeneratedLocation>D:\de0_com_fpga\nios\de0_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
-        <SopcDesignFile>D:\de0_fpga\de0_top\PR_RF\de0_qsys.sopcinfo</SopcDesignFile>
+        <SopcDesignFile>D:\de0_com_fpga\de0_top\PR_RF\de0_fpga.sopcinfo</SopcDesignFile>
+        <SystemFileHash>c9d1358180d91988ec16d23f7859b0b3b72890d4de9056a62a559943db38</SystemFileHash>
         <JdiFile>default</JdiFile>
         <Cpu>cpu</Cpu>
         <SchemaVersion>1.9</SchemaVersion>
@@ -1041,9 +1042,9 @@
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>fifo</slaveDescriptor>
-                <addressRange>0x100B0000 - 0x100B1FFF</addressRange>
-                <addressSpan>8192</addressSpan>
+                <slaveDescriptor>com</slaveDescriptor>
+                <addressRange>0x100B0000 - 0x100B3FFF</addressRange>
+                <addressSpan>16384</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
@@ -1055,26 +1056,32 @@
         <LinkerSection>
                 <sectionName>.text</sectionName>
                 <regionName>sdram</regionName>
+                <noLoad>false</noLoad>
         </LinkerSection>
         <LinkerSection>
                 <sectionName>.rodata</sectionName>
                 <regionName>sdram</regionName>
+                <noLoad>false</noLoad>
         </LinkerSection>
         <LinkerSection>
                 <sectionName>.rwdata</sectionName>
                 <regionName>sdram</regionName>
+                <noLoad>false</noLoad>
         </LinkerSection>
         <LinkerSection>
                 <sectionName>.bss</sectionName>
                 <regionName>sdram</regionName>
+                <noLoad>false</noLoad>
         </LinkerSection>
         <LinkerSection>
                 <sectionName>.heap</sectionName>
                 <regionName>sdram</regionName>
+                <noLoad>false</noLoad>
         </LinkerSection>
         <LinkerSection>
                 <sectionName>.stack</sectionName>
                 <regionName>sdram</regionName>
+                <noLoad>false</noLoad>
         </LinkerSection>
         <SoftwarePackageInfo>
                 <name>altera_ro_zipfs</name>

@@ -86,6 +86,7 @@
    static void clear_f(int argc, char **argv);
    static void traffic_f(int argc, char **argv);
    static void uart_f(int argc, char **argv);
+   static void run_f(int argc, char **argv);
    static void trace_f(int argc, char **argv);
    static void reset_f(int argc, char **argv);
    static void recon_f(int argc, char **argv);
@@ -107,6 +108,7 @@
       {.cmd = "clear",     .func = clear_f      },
       {.cmd = "traffic",   .func = traffic_f    },
       {.cmd = "uart",      .func = uart_f       },
+      {.cmd = "run",       .func = run_f        },
       {.cmd = "trace",     .func = trace_f      },
       {.cmd = "reset",     .func = reset_f      },
       {.cmd = "recon",     .func = recon_f      },
@@ -185,6 +187,7 @@ void help_f(int argc, char **argv) {
    xlprint("               loop 1000\n");
    xlprint("   traffic,    toggle CM traffic\n");
    xlprint("   uart,       toggle UART traffic\n");
+   xlprint("   run,        toggle RUN trace\n");
    xlprint("   trace,      set/get trace flags\n");
    xlprint("               trace [0x00001000]\n");
    xlprint("   reset,      reset using watchdog\n");
@@ -292,6 +295,17 @@ void uart_f(int argc, char **argv) {
    else {
       gc.trace |=  CFG_TRACE_UART;
       xlprint("uart traffic log = on\n");
+   }
+}
+
+void run_f(int argc, char **argv) {
+   if (gc.trace & CFG_TRACE_RUN) {
+      gc.trace &= ~CFG_TRACE_RUN;
+      xlprint("run trace = off\n");
+   }
+   else {
+      gc.trace |=  CFG_TRACE_RUN;
+      xlprint("run trace = on\n");
    }
 }
 

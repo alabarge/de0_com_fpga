@@ -1,10 +1,10 @@
 /*
  * linker.h - Linker script mapping information
  *
- * Machine generated for CPU 'cpu' in SOPC Builder design 'de0_qsys'
- * SOPC Builder design path: D:/de0_fpga/de0_top/PR_COM/de0_qsys.sopcinfo
+ * Machine generated for CPU 'cpu' in SOPC Builder design 'de0_fpga'
+ * SOPC Builder design path: D:/de0_com_fpga/de0_top/PR_RF/de0_fpga.sopcinfo
  *
- * Generated: Tue Jul 25 11:43:25 PDT 2023
+ * Generated: Tue Sep 05 09:39:23 PDT 2023
  */
 
 /*

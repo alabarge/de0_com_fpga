@@ -22,6 +22,9 @@ Steps for building from clean repository
 11.   Then again from Project -> Clean select only de0_fw
 12.   Right click de0_fw Nios II -> Nios II Command Shell...
 13.   Change directory cd ../../script
+
+      NOTE: THE SERIAL PORT MONITOR MUST NOT BE RUNNING IN ORDER TO FLASH THE DESIGN.
+
 14.   Program SOF file from Tools -> Programmer, only necessary when flash is empty
 15.   Flash the SOF, ELF and ZIP files using ./flash_all.sh
 16.   Use the standard out USB serial port (not FTDI part, something like Prolific)

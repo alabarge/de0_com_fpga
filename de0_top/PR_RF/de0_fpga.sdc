@@ -36,6 +36,10 @@ set_false_path -from * -to [get_ports {oTP* oSTDOUT_UART_TX}]
 set_false_path -from * -to [get_ports {oLED*}]
 set_false_path -from * -to [get_ports {ioGPX*}]
 
+# all NIOS control registers
+set_false_path -from [get_registers {*adc_* }] -to *
+set_false_path -from [get_registers {*com_* }] -to *
+set_false_path -from [get_registers {*stamp_* }] -to *
 
 #**************************************************************
 # Set False Path Inputs

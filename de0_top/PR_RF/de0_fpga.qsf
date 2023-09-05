@@ -312,7 +312,6 @@ set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to oCOM_TX
 #set_location_assignment PIN_E10 -to oFSCLK
 #set_location_assignment PIN_B11 -to iFSDO
 #set_location_assignment PIN_D11 -to iFSCTS
-#set_location_assignment PIN_J14 -to oFSGND
 #
 #set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to iFS*
 #set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to oFS*
@@ -384,7 +383,8 @@ set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to oCOM_TX
 #============================================================
 # LAN 8720A, MICROCHIP DAUGHTER CARD (AC320004-3), TVCA
 #
-# IF USING THE MICROCHIP CARD THEN TEH R4 PULL-UP SHOULD BE
+# IF USING THE MICROCHIP CARD THEN THE
+# R4 PULL-UP SHOULD BE
 # SWITCHED TO A PULL-DOWN AND A 22 OHM SERIES RESISTOR SHOULD
 # BE INSERTED IN THE TX_CLK PATH.
 #
