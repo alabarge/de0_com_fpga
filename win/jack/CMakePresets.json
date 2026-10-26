@@ -1,0 +1,52 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": { "major": 3, "minor": 21, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "qt-debug",
+      "displayName": "Qt App (Debug)",
+      "description": "jack-qt against Qt 6.12.0 LTS (MSVC 2022 64-bit). Open this folder in Visual Studio to pick it up automatically.",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_PREFIX_PATH": "C:/Qt/6.12.0/msvc2022_64"
+      }
+    },
+    {
+      "name": "qt-release",
+      "displayName": "Qt App (Release)",
+      "description": "jack-qt Release build against Qt 6.12.0 LTS (MSVC 2022 64-bit).",
+      "inherits": "qt-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "jack_qt-sln",
+      "displayName": "jack_qt.sln (Visual Studio solution)",
+      "description": "Generates a real MSBuild solution (jack_qt.sln, named after this CMakeLists.txt's project() call) for cmapi/fifoapi/comapi/libserialport/qcustomplot/jack-qt - the 'merge into jack.sln, or jack_qt.sln if a new solution is required' request. Uses the 'Visual Studio 17 2022' generator name on purpose, even though the IDE installed is VS 18/2026: CMake's only generator that emits the classic .sln text format is the 'Visual Studio 18 2026' one (any newer generator name emits the new .slnx XML format instead, which the user doesn't want), and only the v145 platform toolset is actually installed, so it's forced explicitly. Works with either the Qt-bundled CMake or the one bundled with Visual Studio. Separate binaryDir from the Ninja presets above since a binary dir's CMake cache is tied to one generator.",
+      "generator": "Visual Studio 17 2022",
+      "architecture": { "value": "x64", "strategy": "set" },
+      "toolset": { "value": "v145", "strategy": "set" },
+      "binaryDir": "${sourceDir}/build-vs",
+      "cacheVariables": {
+        "CMAKE_PREFIX_PATH": "C:/Qt/6.12.0/msvc2022_64"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "qt-debug",
+      "configurePreset": "qt-debug"
+    },
+    {
+      "name": "qt-release",
+      "configurePreset": "qt-release"
+    },
+    {
+      "name": "jack_qt-sln",
+      "configurePreset": "jack_qt-sln"
+    }
+  ]
+}
